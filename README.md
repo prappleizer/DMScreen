@@ -55,7 +55,7 @@ Location: forest, mayors-office
 ```
 
 For `NPC` or `combatant` markdown files, one can provide the base stats as follows: 
-
+```
 ---
 title: Edwin Cawley
 STR: 12
@@ -65,7 +65,7 @@ INT: 8
 WIS: 13
 CHA: 16
 ---
-
+```
 These will automatically render into the shield-like statblocks at the top of each npc/combatant page. If none are provided, it assumes base stats of 10 across the board. For combat/encounter statblocks, `AC` and `HP` must also be provided.
 
 
