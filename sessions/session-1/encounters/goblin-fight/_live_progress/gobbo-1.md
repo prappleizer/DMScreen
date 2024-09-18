@@ -1,13 +1,14 @@
 ---
-title: Goblin Warrior (1)
 AC: 15
-HP: 30
-STR: 8
-DEX: 12
-CON: 15
-INT: 8
-WIS: 10
 CHA: 11
+CON: 15
+DEX: 12
+HP: 14
+INT: 8
+STR: 8
+WIS: 10
+title: Goblin Warrior (1)
 ---
+
 
 This goblin is fierce and ready for battle.

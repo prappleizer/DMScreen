@@ -1,6 +1,8 @@
 # DMScreen
 A Handy scene based tool for DMs, along with a simple HP encounter runner.
 
+![](/app_files/static/images/app-example.png)
+
 ## Setup
 
 When you download the code, a sample session with a few scenes, NPCs, and 1 encounter has been setup to showcase the tool. 
@@ -87,6 +89,8 @@ python app.py --session session-name
 
 You will be taken to the `intro.md` scene. Your overall screen is split into three main sections, between a navbar at the top containing all scenes, npcs, locations, and encounters. 
 
+![](/app_files/static/images/app-example.png)
+
 1. The Left and Right panels contain buttons determined by the `Causal-from` and `Causal-to` keys in the frontmatter. These allow you to set up any number of other scenes you think may be useful to jump to from a given scene. At any time, you can use the `scenes` nav bar item to go to any scene. 
 2. The center panel contains a card with your Scene markdown content. At the top of the scene card are buttons for any NPCs or Locations you linked to this scene. 
 3. When you click a location or NPC link (including from the nav bar), a sidebar opens on the left of the page covering the Causal-from links, which displays the markdown content (and stats if relevant). The sidebar has a close button (right arrow), or re-clicking the same button will close the sidebar. 
@@ -118,3 +122,4 @@ The HP is used to create a healthbar for each creature, which also displays its 
 
 In combat mode, the middle card holds the health trackers, the right panel has the combatants, with entry fields for entering damage, or for resetting the encounter. The left panel is left empty, as clicking the combatant names pulls out the sidebar, and we expect the sidebar to be open often during combat.
 
+![](/app_files/static/images/combat-example.png)
