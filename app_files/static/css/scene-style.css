@@ -109,10 +109,10 @@ body::-webkit-scrollbar-track {
     background-color: #e0e0e0;
     border-radius: 50% / 30%; /* Create a shield-like shape with rounded top and bottom */
     border: 2px solid #666;
-    padding: 20px;
+    padding: 5px;
     text-align: center;
     width: 80px;
-    height: 100px; /* Height to make it taller than wide for shield effect */
+    height: 85px; /* Height to make it taller than wide for shield effect */
     margin: 10px auto; /* Center the badge horizontally with margin */
     position: relative;
     font-family: 'Arial', sans-serif;
