@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+{% include 'nav.html' %}
+
+
+{% block content %}
+<div class="d-flex no-gutters" style="width: 100vw; padding: 10px;">
+    <!-- Previous Scenes Column (this will now extend the full height) -->
+    <div class="prev-scenes-column" id="prev-scenes-column" style="flex: 2; max-width: 23%;">
+        {% if previous_scene_titles %}
+        <div class="p-3 border bg-light">
+            <h5>Previous Scenes</h5>
+            {% for scene, title in previous_scene_titles.items() %}
+                <a href="{{ url_for('show_scene', scene_name=scene) }}" class="btn btn-secondary btn-block mb-1">{{ title }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Main Content Column (This will be squeezed when sidebar is active) -->
+    <div class="main-content" id="main-content" style="flex: 4; max-width: 54%;">
+        <!-- Main Card -->
+        <div class="card">
+            <div class="card-header">
+                {% if npcs %}
+                <div class="d-inline-flex align-items-center" style="padding: 0; margin: 0;">
+                    <h6 class="mb-0" style="margin-right: 10px;">NPCs:</h6> <!-- Ensure minimal margin -->
+                    <div style="display: inline-flex; flex-wrap: wrap; gap: 5px; margin: 0; padding: 0;">
+                        {% for npc in npcs %}
+                            <a href="#" class="btn btn-outline-secondary btn-sm" style="padding: 0.25rem 0.5rem; margin: 0;" onclick="showNpcSidebar('{{ npc }}')">
+                                {{ npc.replace('-', ' ').title() }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Location Buttons -->
+                {% if metadata.get('Location') %}
+                <div class="mt-2" style="display: block; width: 100%; padding: 0; margin: 0;">
+                    <!-- Wrap the heading and buttons in an inline-flex container -->
+                    <div class="d-inline-flex align-items-center" style="padding: 0; margin: 0;">
+                        <h6 class="mb-0" style="margin-right: 10px;">
+                            Location{% if metadata['Location']|length > 1 %}s{% endif %}:
+                        </h6>
+                        <div style="display: inline-flex; flex-wrap: wrap; gap: 5px; margin: 0; padding: 0;">
+                            {% for location in metadata['Location'].split(', ') %}
+                                <a href="#" class="btn btn-outline-secondary btn-sm" style="padding: 0.25rem 0.5rem; margin: 0;" onclick="showLocationSidebar('{{ location }}')">
+                                    {{ location.replace('-', ' ').title() }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="card-body">
+                <h1>{{ metadata['title'] if metadata.get('title') else scene_name.replace('-', ' ').title() }}</h1>
+                {{ content|safe }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Next Scenes Column (Fixed at 1/6 width) -->
+    <div class="next-scenes-column" id="next-scenes-column" style="flex: 1; max-width: 23%;">
+        {% if next_scene_titles %}
+        <div class="p-3 border bg-light">
+            <h5>Next Scenes</h5>
+            {% for scene, title in next_scene_titles.items() %}
+                <a href="{{ url_for('show_scene', scene_name=scene) }}" class="btn btn-secondary btn-block mb-1">{{ title }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- NPC Sidebar (initially hidden off-screen) -->
+    <div id="npc-sidebar" class="npc-sidebar">
+        <div class="p-3">
+            <!-- FontAwesome Left Arrow at the Top -->
+            <button class="btn btn-light" onclick="hideNpcSidebar()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            
+            <!-- NPC/Location Content -->
+            <div id="npc-content" class="mt-4"></div>
+    
+        </div>
+    </div>
+</div>
+<!-- Include CSS and JS for Sidebar and FontAwesome -->
+<style>
+/* Ensure the entire row takes up the full height of the viewport */
+.d-flex {
+min-height: 100vh; /* Make the parent container stretch to full viewport height */
+align-items: stretch; /* Ensure columns are stretched vertically */
+}
+
+/* Make the Previous Scenes and Next Scenes columns stretch 100% in height */
+/* Ensure the Previous Scenes and Next Scenes columns stretch 100% in height */
+.prev-scenes-column, .next-scenes-column {
+        background-color: #f8f9fa; /* Light gray background color */
+        display: flex;
+        flex-direction: column; /* Stack the buttons vertically */
+        justify-content: flex-start; /* Align buttons to the top */
+        align-items: stretch; /* Make buttons take full width */
+    }
+
+    /* Ensure buttons in the columns take full width */
+    .prev-scenes-column .btn, .next-scenes-column .btn {
+        width: 100%; /* Make buttons stretch to full width */
+        margin-bottom: 10px; /* Add some space between buttons */
+    }
+/* NPC Sidebar */
+.npc-sidebar {
+    position: fixed;
+    top: 0;
+    left: -23%; /* Sidebar starts hidden off the left (23% of the screen) */
+    width: 23%; /* Sidebar takes 23% of the screen width */
+    height: 100%;
+    background-color: #f8f9fa;
+    box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.1);
+    transition: left 0.3s ease;
+    z-index: 999;
+    overflow-y: auto;  /* Add vertical scrolling */
+}
+
+/* When sidebar is active, slide it into view */
+.npc-sidebar.active {
+    left: 0;
+}
+
+/* Adjust main content when sidebar is visible */
+.main-content.squeezed {
+    transition: all 0.3s ease;
+    max-width: 50%; /* Shrinks to 50% width (equivalent to 3/6) */
+    width: 50%;
+    flex: auto;
+}
+
+/* Ensure the previous and next columns don't move or shrink */
+.prev-scenes-column,
+.next-scenes-column {
+    transition: none;
+}
+</style>
+
+
+
+<script>
+    // Track which sidebar is open (null means none is open)
+    let currentSidebar = null;
+
+    /* Function to show the NPC sidebar */
+function showNpcSidebar(npcName) {
+    if (currentSidebar === npcName) {
+        hideNpcSidebar();
+        return;
+    }
+
+    // Fetch the NPC content and stats via Flask route
+    fetch('/npc/' + npcName)
+    .then(response => response.json())
+    .then(data => {
+        var npcContentDiv = document.getElementById('npc-content');
+        
+        // Generate the HTML for stats badges
+        var statsHtml = `
+            <div class="container text-center">
+                <div class="row mb-1">
+                    <div class="col-4">
+                        <div class="stat-badge">
+                            <div class="stat-value">${data.stats.STR}</div>
+                            <div class="stat-label">STR</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="stat-badge">
+                            <div class="stat-value">${data.stats.DEX}</div>
+                            <div class="stat-label">DEX</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="stat-badge">
+                            <div class="stat-value">${data.stats.CON}</div>
+                            <div class="stat-label">CON</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <div class="stat-badge">
+                            <div class="stat-value">${data.stats.INT}</div>
+                            <div class="stat-label">INT</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="stat-badge">
+                            <div class="stat-value">${data.stats.WIS}</div>
+                            <div class="stat-label">WIS</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="stat-badge">
+                            <div class="stat-value">${data.stats.CHA}</div>
+                            <div class="stat-label">CHA</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Set the NPC content and stats in the sidebar
+        npcContentDiv.innerHTML = `
+            <h1>${data.title}</h1>
+            ${statsHtml}  <!-- Stats come before the content -->
+            <div>${data.content}</div>
+        `;
+
+        // Show the sidebar
+        document.getElementById('npc-sidebar').classList.add('active');
+        document.getElementById('main-content').classList.add('squeezed');
+        currentSidebar = npcName;
+    });
+}
+
+
+    /* Function to show the Location sidebar */
+    function showLocationSidebar(location) {
+    if (currentSidebar === location) {
+        // If the same Location is clicked again, hide the sidebar
+        hideNpcSidebar();
+        return;
+    }
+
+    // Fetch the Location content and title via Flask route
+    fetch('/location/' + location)
+        .then(response => response.json())  // Parse the JSON response
+        .then(data => {
+            const locationContentDiv = document.getElementById('npc-content');
+
+            // Insert the title into an <h1> tag, if available
+            locationContentDiv.innerHTML = `
+                <h1>${data.title}</h1>
+                <div>${data.content}</div>
+            `;
+
+            // Show the sidebar
+            document.getElementById('npc-sidebar').classList.add('active');
+            document.getElementById('main-content').classList.add('squeezed');
+            currentSidebar = location;  // Update the currently open sidebar
+        });
+}
+
+    /* Function to hide the NPC/Location sidebar */
+    function hideNpcSidebar() {
+        document.getElementById('npc-sidebar').classList.remove('active');
+        document.getElementById('main-content').classList.remove('squeezed');
+        currentSidebar = null;  // Reset the currently open sidebar
+    }
+
+</script>
+
+{% endblock %}

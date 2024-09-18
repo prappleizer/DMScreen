@@ -1,0 +1,108 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid justify-content-center">
+        <ul class="navbar-nav">
+            <!-- Home Link -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+            </li>
+
+            <!-- Scenes Dropdown -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="scenesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Scenes
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="scenesDropdown">
+                    {% for scene in all_scenes %}
+                        <li><a class="dropdown-item" href="{{ url_for('show_scene', scene_name=scene.name) }}">{{ scene.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
+
+            <!-- NPCs Dropdown -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="npcsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    NPCs
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="npcsDropdown">
+                    {% for npc in all_npcs %}
+                        <li><a class="dropdown-item" href="#" onclick="showNpcSidebar('{{ npc.name }}')">{{ npc.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
+
+            <!-- Locations Dropdown -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="locationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Locations
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="locationsDropdown">
+                    {% for location in all_locations %}
+                        <li><a class="dropdown-item" href="#" onclick="showLocationSidebar('{{ location.name }}')">{{ location.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
+
+            <!-- Encounters Dropdown -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="encountersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Encounters
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="encountersDropdown">
+                    {% for encounter in all_encounters %}
+                        <li><a class="dropdown-item" href="{{ url_for('show_encounter', encounter_name=encounter.name) }}">{{ encounter.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- CSS to style the navbar -->
+<style>
+    .navbar {
+        background-color: #f8f9fa;
+        font-size: 1rem;
+        padding: 0.5rem 0;
+    }
+
+    .navbar-nav .nav-link {
+        text-decoration: underline;
+        padding: 0.5rem 1rem;
+    }
+
+    .navbar-nav .nav-item {
+        margin-right: 1rem;
+    }
+
+    .navbar-nav .dropdown-menu {
+        text-align: center;
+    }
+</style>
+
+<!-- Include Bootstrap's JS (for dropdown functionality) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- JavaScript for opening the NPC and Location sidebars -->
+<script>
+    function showNpcSidebar(npc) {
+        console.log('Opening NPC sidebar for:', npc);
+        fetch('/npc/' + npc)
+            .then(response => response.text())
+            .then(content => {
+                document.getElementById('npc-content').innerHTML = content;
+                document.getElementById('npc-sidebar').classList.add('active');
+                document.getElementById('main-content').classList.add('squeezed');
+            });
+    }
+
+    function showLocationSidebar(location) {
+        console.log('Opening Location sidebar for:', location);
+        fetch('/location/' + location)
+            .then(response => response.text())
+            .then(content => {
+                document.getElementById('npc-content').innerHTML = content;
+                document.getElementById('npc-sidebar').classList.add('active');
+                document.getElementById('main-content').classList.add('squeezed');
+            });
+    }
+</script>
