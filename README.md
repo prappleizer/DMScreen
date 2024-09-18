@@ -15,7 +15,7 @@ To launch the app for a given session, from the `DMScreen/` directory, run, e.g.
 python app.py --session session-1
 ```
 
-providing the session folder name to the `--session` flag. The above will open the example.
+providing the session folder name to the `--session` flag. The above will open the example. The app should be running at `http://127.0.0.1:5001/`, which you can navigate to in your browser. 
 
 Within a session, there are four key folders to create: 
 
