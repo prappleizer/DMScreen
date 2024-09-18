@@ -1,5 +1,5 @@
 ---
-NPCs: henry, harry
+NPCs: Elara
 Causal-from: middle, opening
 title: Ancient Ruins
 ---
