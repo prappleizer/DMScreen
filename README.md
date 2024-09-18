@@ -89,7 +89,7 @@ python app.py --session session-name
 
 You will be taken to the `intro.md` scene. Your overall screen is split into three main sections, between a navbar at the top containing all scenes, npcs, locations, and encounters. 
 
-![](/app_files/static/images/app-example.png)
+![](/app_files/static/images/sidebar.png)
 
 1. The Left and Right panels contain buttons determined by the `Causal-from` and `Causal-to` keys in the frontmatter. These allow you to set up any number of other scenes you think may be useful to jump to from a given scene. At any time, you can use the `scenes` nav bar item to go to any scene. 
 2. The center panel contains a card with your Scene markdown content. At the top of the scene card are buttons for any NPCs or Locations you linked to this scene. 
