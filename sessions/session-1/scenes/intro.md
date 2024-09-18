@@ -24,7 +24,7 @@ _The village of Haver's Rest lies peacefully among rolling hills and golden fiel
 
 #### **Key Locations**
 
-![Alt text](../static/images/havers_rest.png)
+![Alt text](/static/images/havers_rest.jpg)
 
 1. **The Village Square**
     - A central gathering place with a notice board displaying messages about missing livestock and requests for assistance.
