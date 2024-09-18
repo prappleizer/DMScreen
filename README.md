@@ -68,7 +68,7 @@ WIS: 13
 CHA: 16
 ---
 ```
-These will automatically render into the shield-like statblocks at the top of each npc/combatant page. If none are provided, it assumes base stats of 10 across the board. For combat/encounter statblocks, `AC` and `HP` must also be provided.
+These will automatically render into the shield-like statblocks at the top of each npc/combatant page. If none are provided, it assumes base stats of 10 across the board. For combat/encounter statblocks, `AC` and `HP` must also be provided. Note that because nothing is done computationally with these stats, you can alternatively enter modifiers if you prefer. 
 
 ## Images 
 At the moment, the only way to add and render images within your scenes is as follows: 
