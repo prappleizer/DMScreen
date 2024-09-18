@@ -68,6 +68,14 @@ CHA: 16
 ```
 These will automatically render into the shield-like statblocks at the top of each npc/combatant page. If none are provided, it assumes base stats of 10 across the board. For combat/encounter statblocks, `AC` and `HP` must also be provided.
 
+## Images 
+At the moment, the only way to add and render images within your scenes is as follows: 
+1. First, add the image to the `/app_files/static/images` directory, then
+2. Within your markdown files, you can reference images like this:
+
+```
+![Alt text](/static/images/havers_rest.jpg)
+```
 
 
 ## Usage 
