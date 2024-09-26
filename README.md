@@ -107,7 +107,7 @@ The sidebar has a close button (right arrow), or re-clicking the same button wil
 From here, it's up to you! You can navigate through scenes, and quick-check location or NPC info. 
 
 ### Search 
-You can pull up a floating search via `cmd+K`, which lets you quickly do a textual search for matches in your markdown files. 
+You can pull up a floating search via `cmd+K`, which lets you quickly do a textual search for matches in your markdown files (you can also click the search icon on the nav bar).
 
 ![](/app_files/static/images/search.png)
 
