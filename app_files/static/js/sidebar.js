@@ -92,18 +92,14 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to generate stats HTML
     function generateStatsHtml(stats) {
         return `
-            <div class="container text-center">
-                <div class="row mb-1">
-                    <div class="col-4"><div class="stat-badge"><div class="stat-value">${stats.STR}</div><div class="stat-label">STR</div></div></div>
-                    <div class="col-4"><div class="stat-badge"><div class="stat-value">${stats.DEX}</div><div class="stat-label">DEX</div></div></div>
-                    <div class="col-4"><div class="stat-badge"><div class="stat-value">${stats.CON}</div><div class="stat-label">CON</div></div></div>
-                </div>
-                <div class="row">
-                    <div class="col-4"><div class="stat-badge"><div class="stat-value">${stats.INT}</div><div class="stat-label">INT</div></div></div>
-                    <div class="col-4"><div class="stat-badge"><div class="stat-value">${stats.WIS}</div><div class="stat-label">WIS</div></div></div>
-                    <div class="col-4"><div class="stat-badge"><div class="stat-value">${stats.CHA}</div><div class="stat-label">CHA</div></div></div>
-                </div>
-            </div>
+            <div class="stats-container">
+            <div class="stat-badge"><div class="stat-value">${stats.STR}</div><div class="stat-label">STR</div></div>
+            <div class="stat-badge"><div class="stat-value">${stats.DEX}</div><div class="stat-label">DEX</div></div>
+            <div class="stat-badge"><div class="stat-value">${stats.CON}</div><div class="stat-label">CON</div></div>
+            <div class="stat-badge"><div class="stat-value">${stats.INT}</div><div class="stat-label">INT</div></div>
+            <div class="stat-badge"><div class="stat-value">${stats.WIS}</div><div class="stat-label">WIS</div></div>
+            <div class="stat-badge"><div class="stat-value">${stats.CHA}</div><div class="stat-label">CHA</div></div>
+        </div>
         `;
     }
 

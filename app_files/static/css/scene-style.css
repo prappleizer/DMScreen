@@ -233,3 +233,15 @@ align-items: stretch; /* Ensure columns are stretched vertically */
     width: 50%;
     flex: auto;
 }
+
+/* Default two rows of three */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Default to 3 columns */
+    gap: 10px;
+}
+
+/* When the sidebar is expanded to 50% */
+#generic-sidebar.expanded .stats-container {
+    grid-template-columns: repeat(6, 1fr); /* Change to 6 columns */
+}
