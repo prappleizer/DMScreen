@@ -180,7 +180,9 @@ align-items: stretch; /* Ensure columns are stretched vertically */
     z-index: 999;
     overflow-y: auto;
 }
-
+.sidebar h1, .sidebar h2, .sidebar h3 {
+    color: #8b0000;
+}
 .sidebar.expanded {
     width: 50%; /* Expanded width */
 }
@@ -197,6 +199,10 @@ align-items: stretch; /* Ensure columns are stretched vertically */
     transition: right 0.3s ease, width 0.3s ease; /* Smooth width transition */
     z-index: 999;
     overflow-y: auto;
+}
+
+.right-sidebar h1, .right-sidebar h2, .right-sidebar h3 {
+    color: #8b0000;
 }
 
 .right-sidebar.expanded {
