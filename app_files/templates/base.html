@@ -16,15 +16,26 @@
     <!-- Sidebar HTML (Generic Sidebar) -->
     <div id="generic-sidebar" class="sidebar">
         <div class="p-3">
-            <button class="btn btn-light" onclick="hideSidebar()">
+            <!-- Expand/Collapse Button -->
+            <button id="sidebar-retract-button" class="btn btn-light" onclick="hideSidebar()">
                 <i class="fas fa-arrow-left"></i>
             </button>
+            <button class="btn btn-light" onclick="toggleSidebarWidth()">
+                <i class="fas fa-arrows-alt-h"></i>
+            </button>
+            <!-- Retract Button with ID for dynamic icon updates -->
+            
             <div id="sidebar-content"></div>
         </div>
     </div>
     <div id="right-sidebar" class="right-sidebar">
         <div class="p-3">
-            <button class="btn btn-light" onclick="hideRightSidebar()">
+            <!-- Expand/Collapse Button -->
+            <button class="btn btn-light" onclick="toggleRightSidebarWidth()">
+                <i class="fas fa-arrows-alt-h"></i>
+            </button>
+            <!-- Retract Button with ID for dynamic icon updates -->
+            <button id="right-sidebar-retract-button" class="btn btn-light" onclick="hideRightSidebar()">
                 <i class="fas fa-arrow-right"></i>
             </button>
             <div id="right-sidebar-content"></div>

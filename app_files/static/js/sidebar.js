@@ -1,12 +1,11 @@
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('sidebar.js loaded'); // Debug log
+    console.log('sidebar.js loaded');
 
     let currentSidebar = null;
+    let currentRightSidebar = null;
 
-    // Function to show the sidebar with content based on the type (npc, location, combatant)
+    // Function to show the left sidebar
     window.showSidebar = function (type, name) {
-        console.log('showSidebar called with type:', type, 'and name:', name); // Debug log
-
         if (currentSidebar === name) {
             hideSidebar();
             return;
@@ -23,137 +22,146 @@ document.addEventListener('DOMContentLoaded', function () {
                 url = `/location/${name}`;
                 break;
             case 'combatant':
-                url = `/combatant/${encounterName}/${name}`; // Adjust for combatant structure
+                url = `/combatant/${encounterName}/${name}`;
                 break;
             default:
                 console.error('Unknown sidebar content type:', type);
                 return;
         }
 
-        console.log('Fetching URL:', url); // Debug log
-
         fetch(url)
             .then(response => response.json())
             .then(data => {
                 const sidebarContentDiv = document.getElementById('sidebar-content');
 
-                // Generate the HTML for stats badges if stats are available
+                // Generate stats badges if available
                 let statsHtml = '';
                 if (data.stats) {
-                    statsHtml = `
-                        <div class="container text-center">
-                            <div class="row mb-1">
-                                <div class="col-4">
-                                    <div class="stat-badge">
-                                        <div class="stat-value">${data.stats.STR}</div>
-                                        <div class="stat-label">STR</div>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="stat-badge">
-                                        <div class="stat-value">${data.stats.DEX}</div>
-                                        <div class="stat-label">DEX</div>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="stat-badge">
-                                        <div class="stat-value">${data.stats.CON}</div>
-                                        <div class="stat-label">CON</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-4">
-                                    <div class="stat-badge">
-                                        <div class="stat-value">${data.stats.INT}</div>
-                                        <div class="stat-label">INT</div>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="stat-badge">
-                                        <div class="stat-value">${data.stats.WIS}</div>
-                                        <div class="stat-label">WIS</div>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="stat-badge">
-                                        <div class="stat-value">${data.stats.CHA}</div>
-                                        <div class="stat-label">CHA</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
+                    statsHtml = generateStatsHtml(data.stats);
                 }
 
-                // Insert content into the sidebar
                 sidebarContentDiv.innerHTML = `
                     <h1>${data.title}</h1>
-                    ${statsHtml} <!-- Include stats if available -->
+                    ${statsHtml}
                     <div>${data.content}</div>
                 `;
 
                 // Show the sidebar
-                document.getElementById('generic-sidebar').classList.add('active');
+                const sidebar = document.getElementById('generic-sidebar');
+                sidebar.classList.add('active');
                 document.getElementById('main-content').classList.add('squeezed');
                 currentSidebar = name;
+
+                // Reset buttons to default states
+                resetSidebarButtons(sidebar);
             })
-            .catch(error => {
-                console.error('Error fetching sidebar content:', error);
-            });
+            .catch(error => console.error('Error fetching sidebar content:', error));
     };
 
-    // Function to hide the sidebar
+    // Function to hide the left sidebar
     window.hideSidebar = function () {
-        document.getElementById('generic-sidebar').classList.remove('active');
+        const sidebar = document.getElementById('generic-sidebar');
+        sidebar.classList.remove('active', 'expanded');
         document.getElementById('main-content').classList.remove('squeezed');
         currentSidebar = null;
+
+        // Reset the button states
+        resetSidebarButtons(sidebar);
     };
-});
-function showRightSidebar(type, name) {
-    if (currentRightSidebar === name) {
-        hideRightSidebar();
-        return;
+
+    // Function to toggle the sidebar width
+    window.toggleSidebarWidth = function () {
+        const sidebar = document.getElementById('generic-sidebar');
+        const toggleButton = document.getElementById('toggle-sidebar-width');
+
+        if (sidebar.classList.contains('expanded')) {
+            sidebar.classList.remove('expanded');
+            toggleButton.innerHTML = '&#x21c4;'; // Show expand icon
+        } else {
+            sidebar.classList.add('expanded');
+            toggleButton.innerHTML = '&#x2194;'; // Show angled arrows icon
+        }
+    };
+
+    // Function to reset the button states
+    function resetSidebarButtons(sidebar) {
+        const toggleButton = document.getElementById('toggle-sidebar-width');
+        toggleButton.innerHTML = '&#x21c4;'; // Set to expand icon
     }
 
-    let url = '';
+    // Function to generate stats HTML
+    function generateStatsHtml(stats) {
+        return `
+            <div class="container text-center">
+                <div class="row mb-1">
+                    <div class="col-4"><div class="stat-badge"><div class="stat-value">${stats.STR}</div><div class="stat-label">STR</div></div></div>
+                    <div class="col-4"><div class="stat-badge"><div class="stat-value">${stats.DEX}</div><div class="stat-label">DEX</div></div></div>
+                    <div class="col-4"><div class="stat-badge"><div class="stat-value">${stats.CON}</div><div class="stat-label">CON</div></div></div>
+                </div>
+                <div class="row">
+                    <div class="col-4"><div class="stat-badge"><div class="stat-value">${stats.INT}</div><div class="stat-label">INT</div></div></div>
+                    <div class="col-4"><div class="stat-badge"><div class="stat-value">${stats.WIS}</div><div class="stat-label">WIS</div></div></div>
+                    <div class="col-4"><div class="stat-badge"><div class="stat-value">${stats.CHA}</div><div class="stat-label">CHA</div></div></div>
+                </div>
+            </div>
+        `;
+    }
 
-    // Determine URL based on content type
-    switch (type) {
-        case 'document':
-            url = `/document/${name}`;
-            break;
-        // Add other cases as needed
-        default:
-            console.error('Unknown right sidebar content type:', type);
+    // Functions for the right sidebar (similar to left sidebar functions)
+    window.showRightSidebar = function (type, name) {
+        if (currentRightSidebar === name) {
+            hideRightSidebar();
             return;
-    }
+        }
 
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            const rightSidebarContentDiv = document.getElementById('right-sidebar-content');
-            rightSidebarContentDiv.innerHTML = `
-                <h1>${data.title}</h1>
-                <div>${data.content}</div>
-            `;
+        let url = '';
 
-            // Show the right sidebar
-            document.getElementById('right-sidebar').classList.add('active');
-            document.getElementById('main-content').classList.add('squeezed-right');
-            currentRightSidebar = name;
-        })
-        .catch(error => {
-            console.error('Error fetching right sidebar content:', error);
-        });
-}
+        switch (type) {
+            case 'document':
+                url = `/document/${name}`;
+                break;
+            default:
+                console.error('Unknown right sidebar content type:', type);
+                return;
+        }
 
-function hideRightSidebar() {
-    document.getElementById('right-sidebar').classList.remove('active');
-    document.getElementById('main-content').classList.remove('squeezed-right');
-    currentRightSidebar = null;
-}
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const rightSidebarContentDiv = document.getElementById('right-sidebar-content');
+                rightSidebarContentDiv.innerHTML = `<h1>${data.title}</h1><div>${data.content}</div>`;
 
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('Right sidebar script loaded');
+                const rightSidebar = document.getElementById('right-sidebar');
+                rightSidebar.classList.add('active');
+                document.getElementById('main-content').classList.add('squeezed-right');
+                currentRightSidebar = name;
+
+                // Reset buttons to default states
+                resetSidebarButtons(rightSidebar);
+            })
+            .catch(error => console.error('Error fetching right sidebar content:', error));
+    };
+
+    window.hideRightSidebar = function () {
+        const rightSidebar = document.getElementById('right-sidebar');
+        rightSidebar.classList.remove('active', 'expanded');
+        document.getElementById('main-content').classList.remove('squeezed-right');
+        currentRightSidebar = null;
+
+        // Reset the button states
+        resetSidebarButtons(rightSidebar);
+    };
+
+    window.toggleRightSidebarWidth = function () {
+        const rightSidebar = document.getElementById('right-sidebar');
+        const toggleButton = document.getElementById('toggle-right-sidebar-width');
+
+        if (rightSidebar.classList.contains('expanded')) {
+            rightSidebar.classList.remove('expanded');
+            toggleButton.innerHTML = '&#x21c4;';
+        } else {
+            rightSidebar.classList.add('expanded');
+            toggleButton.innerHTML = '&#x2194;';
+        }
+    };
 });

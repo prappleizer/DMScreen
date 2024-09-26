@@ -167,50 +167,44 @@ align-items: stretch; /* Ensure columns are stretched vertically */
         width: 100%; /* Make buttons stretch to full width */
         margin-bottom: 10px; /* Add some space between buttons */
     }
-/* Generic Sidebar Styles */
+/* Generic Sidebar */
 .sidebar {
     position: fixed;
     top: 0;
-    left: -23%; /* Sidebar starts hidden off the left */
+    left: -23%;
     width: 23%;
     height: 100%;
     background-color: #f8f9fa;
     box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.1);
-    transition: left 0.3s ease;
+    transition: left 0.3s ease, width 0.3s ease; /* Smooth width transition */
     z-index: 999;
-    overflow-y: auto; /* Add vertical scrolling */
+    overflow-y: auto;
 }
 
-.sidebar.active {
-    left: 0;
-}
-
-/* Main content adjustment when sidebar is visible */
-.main-content.squeezed {
-    transition: all 0.3s ease;
-    max-width: 50%;
-    width: 50%;
-    flex: auto;
-}
-
-/* Ensure the previous and next columns don't move or shrink */
-.prev-scenes-column,
-.next-scenes-column {
-    transition: none;
+.sidebar.expanded {
+    width: 50%; /* Expanded width */
 }
 
 /* Right Sidebar */
 .right-sidebar {
     position: fixed;
     top: 0;
-    right: -23%; /* Sidebar starts hidden off the right (23% of the screen) */
-    width: 23%; /* Sidebar takes 23% of the screen width */
+    right: -23%;
+    width: 23%;
     height: 100%;
     background-color: #f8f9fa;
     box-shadow: -2px 0px 10px rgba(0, 0, 0, 0.1);
-    transition: right 0.3s ease;
+    transition: right 0.3s ease, width 0.3s ease; /* Smooth width transition */
     z-index: 999;
-    overflow-y: auto;  /* Add vertical scrolling */
+    overflow-y: auto;
+}
+
+.right-sidebar.expanded {
+    width: 50%; /* Expanded width */
+}
+
+.sidebar.active {
+    left: 0;
 }
 
 /* When right sidebar is active, slide it into view */
@@ -222,6 +216,20 @@ align-items: stretch; /* Ensure columns are stretched vertically */
 .main-content.squeezed-right {
     transition: all 0.3s ease;
     max-width: 50%; /* Adjust the width as needed */
+    width: 50%;
+    flex: auto;
+}
+
+
+/* Ensure the previous and next columns don't move or shrink */
+.prev-scenes-column,
+.next-scenes-column {
+    transition: none;
+}
+/* Main content adjustment when sidebar is visible */
+.main-content.squeezed {
+    transition: all 0.3s ease;
+    max-width: 50%;
     width: 50%;
     flex: auto;
 }
