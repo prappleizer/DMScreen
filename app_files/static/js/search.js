@@ -19,7 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
             searchInput.focus();
         }
     });
-
+    document.getElementById('search-button').addEventListener('click', () => {
+        openSearchModal();
+    });
+    // Function to open the search modal
+    function openSearchModal() {
+        searchModal.style.display = 'block';
+        searchInput.focus();
+    }
     // Close the search modal on escape key
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {

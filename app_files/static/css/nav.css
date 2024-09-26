@@ -16,3 +16,28 @@
 .navbar-nav .dropdown-menu {
     text-align: center;
 }
+
+/* Style the search button */
+.search-btn {
+    background: none; /* Remove background */
+    border: none; /* Remove border */
+    padding: 8px; /* Adjust padding for better size */
+    margin: 0 0px; /* Add margin for spacing */
+    display: flex; /* Use flex to align icon */
+    align-items: center; /* Center the icon vertically */
+    font-size: 1.25rem; /* Adjust font size for the icon */
+    cursor: pointer; /* Add pointer cursor on hover */
+}
+
+.search-btn:focus {
+    outline: none; /* Remove outline on focus */
+}
+
+.search-btn i {
+    color: #6c757d; /* Color to match the navbar */
+}
+
+/* Add a hover effect */
+.search-btn:hover i {
+    color: #000; /* Change color on hover */
+}
