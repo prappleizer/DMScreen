@@ -13,7 +13,7 @@ def create_session(session_name):
     session_dir = os.path.join(base_dir, session_name)
 
     # Define the subdirectories needed in each session
-    subdirs = ["scenes", "npcs", "encounters", "locations"]
+    subdirs = ["scenes", "npcs", "encounters", "locations", "documents"]
 
     # Check if the session directory already exists
     if os.path.exists(session_dir):
