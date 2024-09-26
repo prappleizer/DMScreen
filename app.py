@@ -500,6 +500,25 @@ def get_all_documents():
     return documents
 
 
+@app.route("/players")
+def get_players():
+    # Path to the players.md file
+    players_file = os.path.join(session_folder, "players.md")
+
+    if not os.path.exists(players_file):
+        return jsonify(
+            {"title": "Players", "content": "No player information available."}
+        ), 404
+
+    # Use parse_markdown_file to get metadata and content
+    metadata, content = parse_markdown_file(session_folder, "players")
+
+    # Use the title from metadata if available; otherwise, default to "Players"
+    title = metadata.get("title", "Players")
+
+    return jsonify({"title": title, "content": content})
+
+
 @app.context_processor
 def inject_nav_data():
     """Inject all scenes, NPCs, locations, encounters, and documents into templates."""

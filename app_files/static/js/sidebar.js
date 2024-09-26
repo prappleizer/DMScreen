@@ -116,6 +116,9 @@ document.addEventListener('DOMContentLoaded', function () {
             case 'document':
                 url = `/document/${name}`;
                 break;
+            case 'players':
+                url = `/players`;
+                break;
             default:
                 console.error('Unknown right sidebar content type:', type);
                 return;
