@@ -91,11 +91,17 @@ python app.py --session session-name
 
 You will be taken to the (required) `intro.md` scene. Your overall screen is split into three main sections, between a navbar at the top containing all scenes, npcs, locations, and encounters. 
 
-![](/app_files/static/images/sidebar.png)
+
 
 1. The Left and Right panels contain buttons determined by the `Causal-from` and `Causal-to` keys in the frontmatter. These allow you to set up any number of other scenes you think may be useful to jump to from a given scene. At any time, you can use the `scenes` nav bar item to go to any scene. 
 2. The center panel contains a card with your Scene markdown content. At the top of the scene card are buttons for any NPCs or Locations you linked to this scene. 
-3. When you click a location or NPC link (including from the nav bar), a sidebar opens on the left of the page covering the Causal-from links, which displays the markdown content (and stats if relevant). The sidebar has a close button (right arrow), or re-clicking the same button will close the sidebar. There is also an "expand" button which expands the sidebar to 50% screenwidth, if you want to view it more fully for a while. 
+3. When you click a location or NPC link (including from the nav bar), a sidebar opens on the left of the page covering the Causal-from links, which displays the markdown content (and stats if relevant). 
+
+![](/app_files/static/images/sidebar.png)
+
+The sidebar has a close button (right arrow), or re-clicking the same button will close the sidebar. There is also an "expand" button which expands the sidebar to 50% screenwidth, if you want to view it more fully for a while. 
+![](/app_files/static/images/sidebar-2.png)
+
 4. When you click on a document link, it opens a similar sidebar on the right-hand side of the screen, also with the ability to expand to half screen width, compress, or retract.
 
 From here, it's up to you! You can navigate through scenes, and quick-check location or NPC info. 
