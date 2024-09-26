@@ -41,6 +41,21 @@
                     {% endfor %}
                 </ul>
             </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="documentsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Documents
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="documentsDropdown">
+                    {% for document in all_documents %}
+                        <li>
+                            <a class="dropdown-item" href="#" onclick="event.preventDefault(); showRightSidebar('document', '{{ document.name }}')">
+                                {{ document.title }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+            
 
             <!-- Encounters Dropdown -->
             <li class="nav-item dropdown">

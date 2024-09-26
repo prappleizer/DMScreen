@@ -198,3 +198,30 @@ align-items: stretch; /* Ensure columns are stretched vertically */
 .next-scenes-column {
     transition: none;
 }
+
+/* Right Sidebar */
+.right-sidebar {
+    position: fixed;
+    top: 0;
+    right: -23%; /* Sidebar starts hidden off the right (23% of the screen) */
+    width: 23%; /* Sidebar takes 23% of the screen width */
+    height: 100%;
+    background-color: #f8f9fa;
+    box-shadow: -2px 0px 10px rgba(0, 0, 0, 0.1);
+    transition: right 0.3s ease;
+    z-index: 999;
+    overflow-y: auto;  /* Add vertical scrolling */
+}
+
+/* When right sidebar is active, slide it into view */
+.right-sidebar.active {
+    right: 0;
+}
+
+/* Adjust main content when right sidebar is visible */
+.main-content.squeezed-right {
+    transition: all 0.3s ease;
+    max-width: 50%; /* Adjust the width as needed */
+    width: 50%;
+    flex: auto;
+}

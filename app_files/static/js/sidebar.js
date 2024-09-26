@@ -110,3 +110,50 @@ document.addEventListener('DOMContentLoaded', function () {
         currentSidebar = null;
     };
 });
+function showRightSidebar(type, name) {
+    if (currentRightSidebar === name) {
+        hideRightSidebar();
+        return;
+    }
+
+    let url = '';
+
+    // Determine URL based on content type
+    switch (type) {
+        case 'document':
+            url = `/document/${name}`;
+            break;
+        // Add other cases as needed
+        default:
+            console.error('Unknown right sidebar content type:', type);
+            return;
+    }
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            const rightSidebarContentDiv = document.getElementById('right-sidebar-content');
+            rightSidebarContentDiv.innerHTML = `
+                <h1>${data.title}</h1>
+                <div>${data.content}</div>
+            `;
+
+            // Show the right sidebar
+            document.getElementById('right-sidebar').classList.add('active');
+            document.getElementById('main-content').classList.add('squeezed-right');
+            currentRightSidebar = name;
+        })
+        .catch(error => {
+            console.error('Error fetching right sidebar content:', error);
+        });
+}
+
+function hideRightSidebar() {
+    document.getElementById('right-sidebar').classList.remove('active');
+    document.getElementById('main-content').classList.remove('squeezed-right');
+    currentRightSidebar = null;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Right sidebar script loaded');
+});

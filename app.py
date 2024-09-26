@@ -246,21 +246,6 @@ def get_all_encounters():
     return sorted(encounters, key=lambda x: x["title"])
 
 
-@app.context_processor
-def inject_nav_data():
-    """Inject all scenes, NPCs, locations, and encounters into templates."""
-    all_scenes = get_all_scenes()
-    all_npcs = get_all_npcs()
-    all_locations = get_all_locations()
-    all_encounters = get_all_encounters()
-    return dict(
-        all_scenes=all_scenes,
-        all_npcs=all_npcs,
-        all_locations=all_locations,
-        all_encounters=all_encounters,
-    )
-
-
 # **New Route to Display the Encounter Page**
 @app.route("/encounter/<encounter_name>")
 def show_encounter(encounter_name):
@@ -462,6 +447,73 @@ def show_combatant(encounter_name, combatant_name):
     }
 
     return jsonify({"title": combatant_title, "content": content, "stats": stats})
+
+
+@app.route("/document/<document_name>")
+def show_document(document_name):
+    documents_folder = os.path.join(session_folder, "documents")
+    document_path = os.path.join(documents_folder, f"{document_name}.md")
+
+    # Check if the document exists
+    if not os.path.isfile(document_path):
+        return jsonify({"error": "Document not found"}), 404
+
+    # Parse the document content
+    metadata, content = parse_markdown_file(documents_folder, document_name)
+
+    # Default title to document name if not specified in metadata
+    document_title = metadata.get("title", document_name.replace("-", " ").title())
+
+    # Return document content as JSON
+    return jsonify({"title": document_title, "content": content})
+
+
+@app.route("/documents")
+def get_all_documents():
+    """Retrieve all documents within the current session's documents folder."""
+    documents_directory = os.path.join(session_folder, "documents")
+    documents = []
+
+    if os.path.exists(documents_directory):
+        for filename in os.listdir(documents_directory):
+            if filename.endswith(".md"):
+                document_name = filename.replace(".md", "")
+                filepath = os.path.join(documents_directory, filename)
+
+                # Attempt to read the front matter to get the title
+                with open(filepath, "r") as file:
+                    content = file.read()
+                    try:
+                        frontmatter, _ = content.split("---", 2)[1:]
+                        metadata = yaml.safe_load(frontmatter)
+                        title = metadata.get(
+                            "title", document_name.replace("-", " ").title()
+                        )
+                    except ValueError:
+                        # No front matter, use filename as title
+                        title = document_name.replace("-", " ").title()
+
+                documents.append({"name": document_name, "title": title})
+
+    return documents
+
+
+@app.context_processor
+def inject_nav_data():
+    """Inject all scenes, NPCs, locations, encounters, and documents into templates."""
+    all_scenes = get_all_scenes()
+    all_npcs = get_all_npcs()
+    all_locations = get_all_locations()
+    all_encounters = get_all_encounters()
+    all_documents = get_all_documents()  # Add this line to inject documents
+
+    return dict(
+        all_scenes=all_scenes,
+        all_npcs=all_npcs,
+        all_locations=all_locations,
+        all_encounters=all_encounters,
+        all_documents=all_documents,  # Include documents in the injected data
+    )
 
 
 # Main block to run the app
