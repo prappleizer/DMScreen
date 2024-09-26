@@ -18,10 +18,10 @@
 
     <!-- Main Content: HP Bar Chart -->
     <div class="main-content" id="main-content" style="flex: 4; max-width: 54%;">
-    <div class="card">
-        <canvas id="hpChart"></canvas>
+        <div class="card">
+            <canvas id="hpChart"></canvas>
+        </div>
     </div>
-</div>
 
     <!-- Right Panel: Combatant Controls -->
     <div class="next-scenes-column combatant-controls" id="combatant-controls" style="flex: 1; max-width: 23%;">
@@ -30,7 +30,7 @@
             <div id="combatant-list">
                 {% for combatant in combatants %}
                 <div class="combatant-item mb-2">
-                    <a href="#" onclick="showCombatantSidebar('{{ combatant.name }}')">{{ combatant.title }}</a>
+                    <a href="#" onclick="showSidebar('combatant', '{{ combatant.name }}')">{{ combatant.title }}</a>
                     <p>AC: {{ combatant.AC }}</p>
                     <input type="number" placeholder="Damage" id="damage-input-{{ combatant.name }}" class="form-control">
                     <button class="btn btn-primary btn-sm mt-1" onclick="applyDamage('{{ combatant.name }}')">Apply</button>
@@ -42,284 +42,15 @@
     </div>
 </div>
 
-<!-- Combatant Sidebar (initially hidden off-screen) -->
-<div id="combatant-sidebar" class="npc-sidebar">
-    <div class="p-3">
-        <!-- FontAwesome Left Arrow at the Top -->
-        <button class="btn btn-light" onclick="hideCombatantSidebar()">
-            <i class="fas fa-arrow-left"></i>
-        </button>
-
-        <!-- Combatant Content -->
-        <div id="combatant-content"></div>
-    </div>
-</div>
+<script>
+    var encounterName = "{{ encounter_name }}";
+</script>
 
 <!-- Include Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- Include FontAwesome -->
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-<!-- Custom JavaScript -->
-<script>
-var combatants = {{ combatants|tojson }};
-var hpChart;
-let currentSidebar = null;
 
-// Initialize the HP chart
-function initializeChart() {
-    var ctx = document.getElementById('hpChart').getContext('2d');
-    var labels = combatants.map(c => c.title);
-    var hpData = combatants.map(c => Math.max(c.HP, 0));  // Ensure no negative HP at the start
-    var backgroundColors = combatants.map(c => getHpColor(c.HP, c.initial_HP));  // Calculate initial colors
-
-    hpChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'HP',
-                data: hpData,
-                backgroundColor: backgroundColors,  // Use the calculated colors
-                borderColor: 'rgba(75,192,192,1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            indexAxis: 'y', // Horizontal bar chart
-            scales: {
-                x: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-}
-
-// Function to update the chart and colors
-function updateChart() {
-    hpChart.data.datasets[0].data = combatants.map(c => Math.max(c.HP, 0));  // Ensure no negative HP
-    hpChart.data.datasets[0].backgroundColor = combatants.map(c => getHpColor(c.HP, c.initial_HP));  // Update colors
-    hpChart.update();
-}
-
-// Function to apply damage and update HP
-function applyDamage(combatantName) {
-    var damageInput = document.getElementById('damage-input-' + combatantName);
-    var damage = parseInt(damageInput.value);
-    if (isNaN(damage)) {
-        alert('Please enter a valid number for damage.');
-        return;
-    }
-
-    fetch(`/encounter/{{ encounter_name }}/combatant/${combatantName}/update_hp`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ delta_hp: damage })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Update combatant's HP in the local data
-            var combatant = combatants.find(c => c.name === combatantName);
-            combatant.HP = Math.max(data.current_hp, 0);  // Ensure HP does not go below 0
-            updateChart();  // Refresh the chart with new values
-            damageInput.value = '';  // Clear the input field
-        } else {
-            alert('Error updating HP.');
-        }
-    });
-}
-
-// Function to get the color based on HP percentage
-function getHpColor(currentHp, initialHp) {
-    var hpPercentage = (currentHp / initialHp) * 100;
-
-    if (hpPercentage > 50) {
-        return 'rgba(75, 192, 192, 0.8)';  // Green when HP > 50%
-    } else if (hpPercentage > 25) {
-        return 'rgba(255, 165, 0, 0.8)';  // Orange when HP is between 25% and 50%
-    } else {
-        return 'rgba(255, 99, 132, 0.8)';  // Red when HP <= 25%
-    }
-}
-
-
-
-
-
-function resetEncounter() {
-    if (!confirm('Are you sure you want to reset the encounter?')) return;
-    fetch(`/encounter/{{ encounter_name }}/reset`, {
-        method: 'POST'
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            location.reload();
-        } else {
-            alert('Error resetting encounter.');
-        }
-    });
-}
-function showCombatantSidebar(combatantName) {
-    if (currentSidebar === combatantName) {
-        hideCombatantSidebar();
-        return;
-    }
-
-    // Fetch the combatant content and stats via Flask route
-    fetch(`/combatant/{{ encounter_name }}/${combatantName}`)
-    .then(response => response.json())
-    .then(data => {
-        var combatantContentDiv = document.getElementById('combatant-content');
-        
-        // Generate the HTML for stats badges
-        var statsHtml = `
-            <div class="container text-center">
-                <div class="row mb-1">
-                    <div class="col-4">
-                        <div class="stat-badge">
-                            <div class="stat-value">${data.stats.STR}</div>
-                            <div class="stat-label">STR</div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="stat-badge">
-                            <div class="stat-value">${data.stats.DEX}</div>
-                            <div class="stat-label">DEX</div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="stat-badge">
-                            <div class="stat-value">${data.stats.CON}</div>
-                            <div class="stat-label">CON</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-4">
-                        <div class="stat-badge">
-                            <div class="stat-value">${data.stats.INT}</div>
-                            <div class="stat-label">INT</div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="stat-badge">
-                            <div class="stat-value">${data.stats.WIS}</div>
-                            <div class="stat-label">WIS</div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="stat-badge">
-                            <div class="stat-value">${data.stats.CHA}</div>
-                            <div class="stat-label">CHA</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        // Set the combatant content and stats in the sidebar
-        combatantContentDiv.innerHTML = `
-            <h2>${data.title}</h2>
-            ${statsHtml}  <!-- Stats come before the content -->
-            <div>${data.content}</div>
-        `;
-
-        // Show the sidebar
-        document.getElementById('combatant-sidebar').classList.add('active');
-        document.getElementById('main-content').classList.add('squeezed');
-        currentSidebar = combatantName;
-    });
-}
-
-function hideCombatantSidebar() {
-    document.getElementById('combatant-sidebar').classList.remove('active');
-    document.getElementById('main-content').classList.remove('squeezed');
-    currentSidebar = null;
-}
-
-window.onload = function() {
-    initializeChart();
-};
-</script>
-
-<!-- Custom CSS -->
-<style>
-    /* Ensure the entire row takes up the full height of the viewport */
-    .d-flex {
-        min-height: 100vh; /* Make the parent container stretch to full viewport height */
-        align-items: stretch; /* Ensure columns are stretched vertically */
-    }
-
-    /* Left Column (Prev Scenes Column) */
-    .prev-scenes-column {
-        background-color: #f8f9fa; /* Light gray background color */
-        display: flex;
-        flex-direction: column; /* Stack elements vertically */
-        justify-content: flex-start; /* Align elements to the top */
-        align-items: stretch; /* Make elements take full width */
-        transition: none;
-    }
-
-    /* Right Column (Next Scenes Column / Combatant Controls) */
-    .next-scenes-column {
-        background-color: #f8f9fa; /* Light gray background color */
-        display: flex;
-        flex-direction: column; /* Stack elements vertically */
-        justify-content: flex-start; /* Align elements to the top */
-        align-items: stretch; /* Make elements take full width */
-        transition: none;
-    }
-
-    /* Ensure buttons in the columns take full width */
-    .prev-scenes-column .btn,
-    .next-scenes-column .btn {
-        width: 100%; /* Make buttons stretch to full width */
-        margin-bottom: 10px; /* Add some space between buttons */
-    }
-
-    /* NPC Sidebar */
-    .npc-sidebar {
-        position: fixed;
-        top: 0;
-        left: -23%; /* Sidebar starts hidden off the left (23% of the screen) */
-        width: 23%; /* Sidebar takes 23% of the screen width */
-        height: 100%;
-        background-color: #f8f9fa;
-        box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.1);
-        transition: left 0.3s ease;
-        z-index: 999;
-        overflow-y: auto;  /* Add vertical scrolling */
-    }
-
-    /* When sidebar is active, slide it into view */
-    .npc-sidebar.active {
-        left: 0;
-    }
-
-    /* Adjust main content when sidebar is visible */
-    .main-content.squeezed {
-        transition: all 0.3s ease;
-        max-width: 50%; /* Shrinks to 50% width (equivalent to 3/6) */
-        width: 50%;
-        flex: auto;
-    }
-
-    /* Additional Styles for Encounter Page */
-    .combatant-controls .combatant-item {
-        border-bottom: 1px solid #ccc;
-        padding-bottom: 10px;
-    }
-
-    /* Adjust the chart size */
-    #hpChart {
-        max-height: 80vh;
-    }
-
-    /* Hide the default scrollbar for the chart container */
-    .main-content {
-        overflow-y: auto;
-    }
-</style>
+<!-- Include custom CSS and JS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/encounter.css') }}">
+<script id="combatants-data" type="application/json">{{ combatants|tojson }}</script>
+<script src="{{ url_for('static', filename='js/encounter.js') }}"></script>
 {% endblock %}

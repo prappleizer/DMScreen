@@ -145,3 +145,56 @@ body::-webkit-scrollbar-track {
     justify-content: space-around; /* Spread badges evenly across the row */
     margin-bottom: 20px; /* Add some space between rows */
 }
+
+/* Ensure the entire row takes up the full height of the viewport */
+.d-flex {
+min-height: 100vh; /* Make the parent container stretch to full viewport height */
+align-items: stretch; /* Ensure columns are stretched vertically */
+}
+
+/* Make the Previous Scenes and Next Scenes columns stretch 100% in height */
+/* Ensure the Previous Scenes and Next Scenes columns stretch 100% in height */
+.prev-scenes-column, .next-scenes-column {
+        background-color: #f8f9fa; /* Light gray background color */
+        display: flex;
+        flex-direction: column; /* Stack the buttons vertically */
+        justify-content: flex-start; /* Align buttons to the top */
+        align-items: stretch; /* Make buttons take full width */
+    }
+
+    /* Ensure buttons in the columns take full width */
+    .prev-scenes-column .btn, .next-scenes-column .btn {
+        width: 100%; /* Make buttons stretch to full width */
+        margin-bottom: 10px; /* Add some space between buttons */
+    }
+/* Generic Sidebar Styles */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -23%; /* Sidebar starts hidden off the left */
+    width: 23%;
+    height: 100%;
+    background-color: #f8f9fa;
+    box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.1);
+    transition: left 0.3s ease;
+    z-index: 999;
+    overflow-y: auto; /* Add vertical scrolling */
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+/* Main content adjustment when sidebar is visible */
+.main-content.squeezed {
+    transition: all 0.3s ease;
+    max-width: 50%;
+    width: 50%;
+    flex: auto;
+}
+
+/* Ensure the previous and next columns don't move or shrink */
+.prev-scenes-column,
+.next-scenes-column {
+    transition: none;
+}

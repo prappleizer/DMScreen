@@ -11,9 +11,28 @@
 </head>
 <body>
     {% block content %}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     {% endblock %}
-    
 
+    <!-- Sidebar HTML (Generic Sidebar) -->
+    <div id="generic-sidebar" class="sidebar">
+        <div class="p-3">
+            <button class="btn btn-light" onclick="hideSidebar()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div id="sidebar-content"></div>
+        </div>
+    </div>
+
+    <!-- Include JS Files -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    
+    <!-- Common JS (contains let currentSidebar) -->
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+
+    <!-- Sidebar JS (contains showSidebar and hideSidebar) -->
+    <script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
+
+    <!-- Include additional JS files based on specific pages -->
+    {% block scripts %}{% endblock %}
 </body>
 </html>

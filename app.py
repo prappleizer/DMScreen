@@ -443,6 +443,7 @@ def show_combatant(encounter_name, combatant_name):
     live_progress_folder = os.path.join(
         session_folder, "encounters", encounter_name, "_live_progress"
     )
+
     metadata, content = parse_markdown_file(live_progress_folder, combatant_name)
 
     if metadata is None:

@@ -1,0 +1,75 @@
+/* Ensure the entire row takes up the full height of the viewport */
+.d-flex {
+    min-height: 100vh;
+    align-items: stretch;
+}
+
+/* Left Column (Prev Scenes Column) */
+.prev-scenes-column {
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    transition: none;
+}
+
+/* Right Column (Next Scenes Column / Combatant Controls) */
+.next-scenes-column {
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    transition: none;
+}
+
+/* Ensure buttons in the columns take full width */
+.prev-scenes-column .btn,
+.next-scenes-column .btn {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+/* NPC Sidebar */
+.npc-sidebar {
+    position: fixed;
+    top: 0;
+    left: -23%;
+    width: 23%;
+    height: 100%;
+    background-color: #f8f9fa;
+    box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.1);
+    transition: left 0.3s ease;
+    z-index: 999;
+    overflow-y: auto;
+}
+
+/* When sidebar is active, slide it into view */
+.npc-sidebar.active {
+    left: 0;
+}
+
+/* Adjust main content when sidebar is visible */
+.main-content.squeezed {
+    transition: all 0.3s ease;
+    max-width: 50%;
+    width: 50%;
+    flex: auto;
+}
+
+/* Additional Styles for Encounter Page */
+.combatant-controls .combatant-item {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+}
+
+/* Adjust the chart size */
+#hpChart {
+    max-height: 80vh;
+}
+
+/* Hide the default scrollbar for the chart container */
+.main-content {
+    overflow-y: auto;
+}
