@@ -51,6 +51,23 @@
                     </div>
                 </div>
                 {% endif %}
+                {% if metadata.get('Document') %}
+                <div class="mt-2" style="display: block; width: 100%; padding: 0; margin: 0;">
+                    <!-- Wrap the heading and buttons in an inline-flex container -->
+                    <div class="d-inline-flex align-items-center" style="padding: 0; margin: 0;">
+                        <h6 class="mb-0" style="margin-right: 10px;">
+                            Document{% if metadata['Location']|length > 1 %}s{% endif %}:
+                        </h6>
+                        <div style="display: inline-flex; flex-wrap: wrap; gap: 5px; margin: 0; padding: 0;">
+                            {% for document in metadata['Document'].split(', ') %}
+                                <a href="#" class="btn btn-outline-secondary btn-sm" style="padding: 0.25rem 0.5rem; margin: 0;" onclick="showRightSidebar('document', '{{ document }}')">
+                                    {{ document.replace('-', ' ').title() }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
             </div>
 
             <div class="card-body">

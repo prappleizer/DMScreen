@@ -22,7 +22,8 @@ Within a session, there are four key folders to create:
 1. `scenes/`: this folder contains markdown files with your scenes, i.e., bite-sized individual moments within the session for which you want some notes. The only requirement is that the first md file for a session is called `intro.md`. 
 2. `npcs/`: this folder contains markdown files for your npcs. 
 3. `locations/`: this folder contains markdown files for any key locations 
-4. `encounters/`: this folder contains information for running encounters. Here you should separate encounters into folders, within which is an `index.md` with frontmatter for the title of the encounter (e.g.,)
+4. `documents/`: this folder contains markdown files for any ancillary documents you want quick access to, like a list provided by an NPC (or DM lists, like random names when names are needed!)
+5. `encounters/`: this folder contains information for running encounters. Here you should separate encounters into folders, within which is an `index.md` with frontmatter for the title of the encounter (e.g.,)
 ```
 ---
 title: Goblin Encounter
