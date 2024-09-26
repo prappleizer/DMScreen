@@ -1,5 +1,7 @@
 import argparse
+import json
 import os
+import re
 import shutil
 
 import markdown
@@ -516,16 +518,116 @@ def inject_nav_data():
     )
 
 
+def extract_snippet(content, query=None):
+    # Strip frontmatter from content
+    match = re.search(r"^---(.*?)---", content, re.DOTALL)
+    if match:
+        content = content[
+            match.end() :
+        ].strip()  # Remove the frontmatter, keep the rest of the content
+
+    # If a query is provided, find a snippet around the first occurrence of the query
+    if query:
+        content_lower = content.lower()
+        match_index = content_lower.find(query.lower())
+        if match_index != -1:
+            snippet_start = max(match_index - 50, 0)
+            snippet_end = min(match_index + len(query) + 50, len(content))
+            snippet = content[snippet_start:snippet_end].strip()
+            # Add ellipses if content was trimmed
+            if snippet_start > 0:
+                snippet = "..." + snippet
+            if snippet_end < len(content):
+                snippet += "..."
+            return snippet
+
+    # Default snippet if no query is provided or no match is found
+    return content[:100] + "..." if len(content) > 100 else content
+
+
+def remove_frontmatter(content):
+    """Remove frontmatter from the content."""
+    match = re.search(r"^---(.*?)---", content, re.DOTALL)
+    if match:
+        return content[match.end() :].strip()
+    return content
+
+
+def build_search_index(session_name):
+    index_path = os.path.join("app_files", "static", "js", "search_index.json")
+    search_index = []
+
+    # Define folders to search
+    content_types = {
+        "scenes": "scene",
+        "encounters": "encounter",
+        "npcs": "npc",
+        "locations": "location",
+        "documents": "document",
+    }
+
+    for folder, url_prefix in content_types.items():
+        folder_path = os.path.join("sessions", session_name, folder)
+        if os.path.exists(folder_path):
+            for filename in os.listdir(folder_path):
+                if filename.endswith(".md"):
+                    content_name = filename.replace(".md", "")
+                    url = f"/{url_prefix}/{content_name}"
+
+                    with open(os.path.join(folder_path, filename), "r") as file:
+                        content = file.read()
+
+                        # Extract frontmatter and content
+                        frontmatter_match = re.match(r"---(.*?)---", content, re.DOTALL)
+                        title = content_name.replace(
+                            "-", " "
+                        ).title()  # Default to filename if no title found
+                        if frontmatter_match:
+                            frontmatter = yaml.safe_load(frontmatter_match.group(1))
+                            # Check if title exists in the frontmatter
+                            if frontmatter and "title" in frontmatter:
+                                title = frontmatter["title"]
+
+                        # Remove frontmatter for indexing content
+                        content_without_frontmatter = remove_frontmatter(content)
+
+                        # Extract snippet from the content without frontmatter
+                        snippet = extract_snippet(content_without_frontmatter)
+
+                        # Add to search index
+                        search_index.append(
+                            {
+                                "title": title,
+                                "url": url,
+                                "content": content_without_frontmatter,  # Use content without frontmatter for search processing
+                                "snippet": snippet,  # Initial snippet
+                            }
+                        )
+
+    # Write the search index to a JSON file
+    with open(index_path, "w") as json_file:
+        json.dump(search_index, json_file)
+
+
 # Main block to run the app
 if __name__ == "__main__":
     # Parse arguments and set the session folder
+
     args = parse_arguments()
 
     # If session is not provided, default to the first session in the sessions directory
     if args.session:
+        sesh = args.session
         set_session_folder(args.session)
     else:
         sessions = sorted(os.listdir(os.path.join(os.getcwd(), "sessions")))
         set_session_folder(sessions[0])
+        sesh = sessions[0]
 
+    os.makedirs("app_files/static/js", exist_ok=True)
+
+    # Path to the JSON file
+    index_path = os.path.join("app_files/static", "js", "search_index.json")
+
+    build_search_index(sesh)
     app.run(debug=True, port=5001)
